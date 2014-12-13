@@ -1,4 +1,13 @@
-## '/dev/tty.usbmodem1411'
+## '/dev/tty.usbmodem1411 - macos
+## '/dev/ttyACM0 - elementaryOS
+## usb_serial_device, db_name, db_user
+## jāpievieno tiesības uz usb serial portu: 
+## sudo adduser janis dialout
+## sudo chmod a+rw /dev/ttyACM0
+## jāpieviento pg serverim lietotājs, kas vienāds ar opsistēmas lietotājvārdu
+
+
+## event tabulai nav privilēģijas
 
 require 'serialport'
 require 'pg'
@@ -8,7 +17,7 @@ $x = nil
 $conn = nil
 
 get '/start' do
-	sp = SerialPort.new('/dev/tty.usbmodem1411', 9600, 8, 1, SerialPort::NONE)
+	sp = SerialPort.new('/dev/ttyACM0', 9600, 8, 1, SerialPort::NONE)
 	$conn = PG::Connection.open(:dbname => 'ard_loc')
 	if $x then
 		"Service already running"
@@ -46,10 +55,6 @@ get '/status' do
 	end
 end
 
-## nevar inicializēt seriālo portu - pārgāju uz getc - ok
-## atgriezto vērtību /status neatgriež "can not convert hash to string" ok
-## res = conn.exec('select count(1) from event') - ok
-
 ## Todo ruby
 ## tikt vaļā no globāliem mainīgajiem
 ## jāiztīra ports pirms sākam lasīt
@@ -60,7 +65,7 @@ end
 ## Rest servisu atbildes saņemšana un atrādīšana
 
 ## Todo ieviešanai
-## Izveidot vidi uz linux mašīnas (pg serveris, ruby gemsets, )
-## iedarbināt testu (seriālā porta darbību, seriālā porta pieejamība?)
+## Izveidot vidi uz linux mašīnas (pg serveris, ruby gemsets, ) OK
+## iedarbināt testu (seriālā porta darbību, seriālā porta pieejamība?) OK
 ## Pārbaudīt, kā servisus var izsaukt no citurienes (no cita datora) - atvērt portu?
 ## ledusskapja slēdža risinājums
