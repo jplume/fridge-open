@@ -15,6 +15,7 @@ require 'sinatra'
 
 $x = nil
 $conn = nil
+set :bind, '0.0.0.0' ## lai servisiem piekļūtu no tīkla
 
 get '/start' do
 	sp = SerialPort.new('/dev/ttyACM0', 9600, 8, 1, SerialPort::NONE)
