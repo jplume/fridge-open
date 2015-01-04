@@ -19,6 +19,7 @@ set :bind, '0.0.0.0' ## lai servisiem piekļūtu no tīkla
 
 get '/start' do
 	sp = SerialPort.new('/dev/ttyACM0', 9600, 8, 1, SerialPort::NONE)
+	sp.flush_input
 	$conn = PG::Connection.open(:dbname => 'ard_loc')
 	if $x then
 		"Service already running"
@@ -28,11 +29,17 @@ get '/start' do
 		$x = Thread.new{
 			while true
 				ev = sp.getc
-				if ev
+				if (['O','C','T'].include? ev)
 					puts ev
+				counter+=1
 					res = $conn.exec_params('insert into event (id, event_type,date_from) values ($1,$2,$3)',
 						[counter,ev,Time.now])
-					counter+=1
+				end
+				if ev == 'T'
+					temperature = sp.readline
+					puts temperature
+					res = $conn.exec_params('update event set num_value=$1 where id=$2',
+						[temperature.to_f,counter])		
 				end
 			end	
 		}
@@ -50,15 +57,21 @@ end
 
 get '/status' do
 	if $conn then 
-		res = $conn.exec('select count(1) from event')
-		"Number of records: " + res [0] ['count']
-	else "Number of records: " + "0"
+		res = $conn.exec('select count(1) from event where event_type in (\'O\')')
+		x = "Fridge opening times: " + res [0] ['count']
+		res = $conn.exec('select avg (num_value) from event where event_type=\'T\'')
+		x= x + " Average temperature: " + res [0] ['avg'].to_s
+		res = $conn.exec('select sum (c.date_from-o.date_from) from event o, event c where o.event_type=\'O\' and c.id = (select min (id) from event x where x.id > o.id and x.event_type=\'C\')')
+		x= x + " Opening time since restart: " + res [0] ['sum'].to_s
+	else "Not connected to database!"
 	end
 end
 
+
+
 ## Todo ruby
 ## tikt vaļā no globāliem mainīgajiem
-## jāiztīra ports pirms sākam lasīt
+## jāiztīra ports pirms sākam lasīt - OK
 
 ## Todo mobap
 ## Darbību izdarīšana uz pogām
@@ -68,5 +81,4 @@ end
 ## Todo ieviešanai
 ## Izveidot vidi uz linux mašīnas (pg serveris, ruby gemsets, ) OK
 ## iedarbināt testu (seriālā porta darbību, seriālā porta pieejamība?) OK
-## Pārbaudīt, kā servisus var izsaukt no citurienes (no cita datora) - atvērt portu?
-## ledusskapja slēdža risinājums
+## Pārbaudīt, kā servisus var izsaukt no citurienes (no cita datora) - atvērt portu? OK
