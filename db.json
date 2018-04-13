@@ -1,10 +1,8 @@
-
 {
 "id": 1,
 "fieldSchema": {
 "id": 1,
-"name": "Stations: CheckIn",
-"value": "{\"rows\":[{\"styleClass\":\"aui-group\",\"columns\":[{\"styleClass\":\"aui-item\",\"cid\":1,\"fieldIds\":[1]},{\"styleClass\":\"aui-item\",\"cid\":2,\"fieldIds\":[2]}]}]}"
+"name": "Stations: CheckIn"
 },
 "externalId": 1,
 "externalMappableType": "PROGRAM",
