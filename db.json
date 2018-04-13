@@ -1,11 +1,24 @@
+[
 {
-  "posts": [
-    {
-      "id": 1,
-      "title": "hello"
-    }
-  ],
-  "profile": {
-    "name": "typicode"
-  }
+"id": 1,
+"fieldSchema": {
+"id": 1,
+"name": "Stations: CheckIn",
+"value": "{\"rows\":[{\"styleClass\":\"aui-group\",\"columns\":[{\"styleClass\":\"aui-item\",\"cid\":1,\"fieldIds\":[1]},{\"styleClass\":\"aui-item\",\"cid\":2,\"fieldIds\":[2]}]}]}"
+},
+"externalId": 1,
+"externalMappableType": "PROGRAM",
+"fieldValues": [
+{
+"id": 5,
+"fieldId": 1,
+"value": "Testingpurpose"
+},
+{
+"id": 6,
+"fieldId": 2,
+"value": "2018-04-09T18:30:00.000Z"
 }
+]
+}
+]
